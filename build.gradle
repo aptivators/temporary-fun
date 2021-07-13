@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.10'
+}
+
+group 'com.aptive'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+def retrofit_version = "2.9.0"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-events
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '3.8.0'
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.1'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.1015'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.11.1015'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-sns', version: '1.11.1015'
+
+    // HTTP client - Retrofit with OkHttp
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-jackson:$retrofit_version"
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.12.3'
+
+//    implementation project(path: ':appian', configuration: 'default')
+//    implementation project(path: ':appian_foia', configuration: 'default')
+//    implementation project(path: ':aws_integration', configuration: 'default')
+//    implementation project(path: ':hyperscience', configuration: 'default')
+//    implementation project(path: ':update', configuration: 'default')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation 'org.mockito:mockito-core:3.9.0'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+}
+
+task buildInitiateZip(type: Zip) {
+    from compileJava
+    from processResources
+    from compileKotlin
+    exclude '**/terraform/*'
+    exclude '**/update/*'
+    into('lib') {
+        from configurations.runtimeClasspath
+    }
+}
+
+build.dependsOn buildInitiateZip
+
+test {
+    useJUnitPlatform()
+}

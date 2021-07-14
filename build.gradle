@@ -7,19 +7,19 @@ group 'com.aptive'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '11'
 
-configurations {
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
+//configurations {
+//    developmentOnly
+//    runtimeClasspath {
+//        extendsFrom developmentOnly
+//    }
+//    compileOnly {
+//        extendsFrom annotationProcessor
+//    }
+//}
 
 repositories {
     jcenter()
-    mavenCentral()
+//    mavenCentral()
 }
 
 def retrofit_version = "2.9.0"
